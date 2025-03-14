@@ -133,9 +133,10 @@ namespace QuickDoseCalc
             refPlan = context.Course.IonPlanSetups.ToList().Where(x => x.Id == comboBox_SelectPlan.Text).FirstOrDefault();
             if (refPlan != null)
             {
-                label_FxDoseValue.Content = ":" + refPlan.DosePerFraction.ValueAsString;
+                textBlock_RefFxDose.Text = refPlan.DosePerFraction.ValueAsString + "cGy";
             }
             else { Console.WriteLine("Select Null, please check!"); }
         }
+
     }
 }
