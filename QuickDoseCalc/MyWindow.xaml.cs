@@ -33,8 +33,8 @@ namespace QuickDoseCalc
             context = context_;
             InitializeComponent();
             // close popup window
-            CancellationTokenSource cts = new CancellationTokenSource();
-            OpenWindowGetter.LaunchWindowsClosingThread(cts.Token);
+            //CancellationTokenSource cts = new CancellationTokenSource();
+            //OpenWindowGetter.LaunchWindowsClosingThread(cts.Token);
             Console.SetOut(new ConsoleTextWriter(textBox_Console));
             Console.WriteLine(" ");
             Console.WriteLine($"Course:{context.Course.Id}");
@@ -46,21 +46,26 @@ namespace QuickDoseCalc
 
         private void CalcPlanHasNoDose()
         {
+            progressBar1.Value = 0;
             for (int i = 0; i < context.Course.IonPlanSetups.Count(); i++) 
             {
                 var plan = context.Course.IonPlanSetups.ToList()[i];
                 if (plan.IsDoseValid == false || checkBox_ForceReCalc.IsChecked==true)
                 {
-                    Console.WriteLine(string.Format("Start Calc {0}", plan.Id));
+                    Console.WriteLine($"Calc {i+1}/{context.Course.IonPlanSetups.Count()} [{plan.Id}] start");
                     DoseCalc(plan);
-                    Console.WriteLine(string.Format("Finished Calc {0}", plan.Id));
+                    Console.WriteLine($"Calc {i + 1}/{context.Course.IonPlanSetups.Count()} [{plan.Id}] finish");
                 }
                 else
                 {
                     Console.WriteLine(string.Format("{0} has dose, ignored!", plan.Id));
                 }
+                progressBar1.Value = (i + 1) * 100 / context.Course.IonPlanSetups.Count();
             }
+            progressBar1.Value = 100;
             Console.WriteLine(string.Format("All tasks finished!"));
+            MessageBox.Show("All tasks finished!");
+            progressBar1.Value = 0;
         }
 
         private void DoseCalc(IonPlanSetup plan)
@@ -73,7 +78,9 @@ namespace QuickDoseCalc
             //    //Console.WriteLine($"set ImagingDeviceModel from {plan.Series.ImagingDeviceModel} to {refPlan.Series.ImagingDeviceModel}");
             //    //Console.WriteLine($"set ImagingDeviceSerialNo from {plan.Series.ImagingDeviceSerialNo} to {refPlan.Series.ImagingDeviceSerialNo}");
             //}
-            plan.SetPrescription(Convert.ToInt32(refPlan.NumberOfFractions), refPlan.DosePerFraction, refPlan.TreatmentPercentage);
+            DoseValue doseValue = new DoseValue(Convert.ToDouble(textBox_RefFxDose.Text), refPlan.DosePerFraction.Unit);
+            plan.SetPrescription(Convert.ToInt32(refPlan.NumberOfFractions), doseValue, refPlan.TreatmentPercentage);
+            Console.WriteLine($"set Fx Prescription as [{refPlan.DosePerFraction}]");
             plan.SetCalculationModel(CalculationType.ProtonVolumeDose, refPlan.ProtonCalculationModel);
             foreach (var item in refPlan.ProtonCalculationOptions)
             {
@@ -120,23 +127,33 @@ namespace QuickDoseCalc
             {
                 Console.WriteLine("No plan setups found.");
             }
+            UpdateFxDose();
         }
 
         private void button_Start_Click(object sender, RoutedEventArgs e)
         {
+            if (checkBox_AutoCloseWarning.IsChecked == true)
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                OpenWindowGetter.LaunchWindowsClosingThread(cts.Token);
+            }
             context.Patient.BeginModifications();
             CalcPlanHasNoDose();
         }
 
         private void comboBox_SelectPlan_DropDownClosed(object sender, EventArgs e)
         {
+            UpdateFxDose();
+        }
+
+        private void UpdateFxDose()
+        {
             refPlan = context.Course.IonPlanSetups.ToList().Where(x => x.Id == comboBox_SelectPlan.Text).FirstOrDefault();
             if (refPlan != null)
             {
-                textBlock_RefFxDose.Text = refPlan.DosePerFraction.ValueAsString + "cGy";
+                textBox_RefFxDose.Text = refPlan.DosePerFraction.ValueAsString;
             }
             else { Console.WriteLine("Select Null, please check!"); }
         }
-
     }
 }

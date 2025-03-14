@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuickDoseCalc"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Quick Dose Calculation for Eclipse TPS V1.0" Height="450" Width="750" Icon="2023-06-02_105437.ico">
     <Grid>
         <!-- Menu Bar -->
         <Menu VerticalAlignment="Top">
@@ -44,16 +44,16 @@
             </Grid.RowDefinitions>
 
             <!-- Right Side: Large TextBox -->
-            <TextBox x:Name="textBox_Console" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10"
+            <TextBox x:Name="textBox_Console" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,10,5,10"
                      TextWrapping="Wrap" AcceptsReturn="True" FontSize="14" Text="show progress here ..." Opacity="0.6" />
 
             <!-- Progress Bar at the Bottom -->
             <ProgressBar x:Name="progressBar1" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                         Height="20" Margin="5" />
+                         Height="20" Margin="0,10,0,0" />
 
             <!-- Left Side: Controls (Buttons, Labels, and ComboBox/TextBlock) -->
             <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" HorizontalAlignment="Stretch"
-                        Orientation="Vertical" Margin="5,15,5,5">
+                        Orientation="Vertical" Margin="3,15,5,5">
 
                 <!-- First row: Label and ComboBox -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5">
@@ -63,13 +63,15 @@
 
                 <!-- Second row: Label and TextBlock -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5">
-                    <Label Content="Ref FxDose:" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="textBlock_RefFxDose" Text="?" VerticalAlignment="Center"/>
+                    <Label Content="Ref FxDose (cGy):" VerticalAlignment="Center"/>
+                    <TextBox x:Name="textBox_RefFxDose" Text="" Width="70" VerticalAlignment="Center" Height="25"/>
                 </StackPanel>
                 <StackPanel Margin="5">
                     <CheckBox x:Name="checkBox_ForceReCalc" Content="ForceReCalc" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
                 </StackPanel>
-
+                <StackPanel Margin="5">
+                    <CheckBox x:Name="checkBox_AutoCloseWarning" Content="AutoCloseWarning" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="True"></CheckBox>
+                </StackPanel>
 
 
             </StackPanel>
