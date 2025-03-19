@@ -58,7 +58,7 @@
                 <!-- First row: Label and ComboBox -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5">
                     <Label Content="Choose Ref Plan:" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="comboBox_SelectPlan" Width="200" Height="30"></ComboBox>
+                    <ComboBox x:Name="comboBox_SelectPlan" Width="200" Height="30" DropDownClosed="comboBox_SelectPlan_DropDownClosed"></ComboBox>
                 </StackPanel>
 
                 <!-- Second row: Label and TextBlock -->
